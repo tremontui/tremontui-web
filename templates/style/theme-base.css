@@ -10,14 +10,14 @@ html, body {
 #wrapper {
 	overflow:auto;
 	height:100%;
-	padding:0 5%;
+	padding:2% 5%;
 	background-color:rgba(225,225,225,1);
 }
 
 .blurb-mod{
 	overflow:auto;
 	width:92%;
-	min-height:92%;
+	min-height:50%;
 	padding:3%;
 	margin:1%;
 	border-radius:20px;
@@ -82,5 +82,10 @@ h6{
 }
 
 /*************************************
-
+MAIN HEADER
 *************************************/
+
+#main-header{
+	overflow:auto;
+	background-color:rgba(170,200,170,1);
+}

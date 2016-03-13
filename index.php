@@ -1,6 +1,8 @@
 <?php
 require_once './vendor/autoload.php';
 
+session_start();
+
 use Slim\Views\PhpRenderer;	
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -14,7 +16,7 @@ $c = new \Slim\Container( $configuration );
 
 $app = new Slim\App( $c );
 
-$app->add( function (Request $request, Response $response, callable $next ) {
+$app->add( function( Request $request, Response $response, callable $next ) {
     $uri = $request->getUri();
     $path = $uri->getPath();
     if ($path != '/' && substr($path, -1) == '/') {
@@ -27,12 +29,33 @@ $app->add( function (Request $request, Response $response, callable $next ) {
     return $next($request, $response);
 });
 
+$app->add( function( Request $request, Response $response, callable $next ) {
+	$path = $request->getUri()->getPath();
+	
+    if( !isset( $_SESSION['access_token']) && $path != '/login' ){
+		
+		return $this->renderer->render( $response, '/main.php', ['modules' => ['form-login']] );
+	}
+	
+	return $next( $request, $response );
+    
+});
+
 $container = $app->getContainer();
 $container['renderer'] = new PhpRenderer( './templates' );
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
+};
 
 $app->get( '/', function( $request, $response, $args ){
 	
 	return $this->renderer->render( $response, '/main.php', $args );
+	
+});
+
+$app->post( '/login', function( $request, $response, $args ){
+	
+	print_r('test');
 	
 });
 
