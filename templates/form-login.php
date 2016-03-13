@@ -1,7 +1,7 @@
 <div class="blurb-mod">
-	<h1>
+	<h2>
 		Tremont User Login
-	</h1>
+	</h2>
 	<form action="login" method="post">
 		<input name="username" placeholder="Username. . . ">
 		<input name="password" type="password" placeholder="Password. . . ">
