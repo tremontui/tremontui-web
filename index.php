@@ -1,8 +1,14 @@
 <?php
+/**
+ * BOOTSTRAP
+ */
 require_once './vendor/autoload.php';
 
 session_start();
 
+/**
+ *	NAMESPACING
+ */
 use Slim\Views\PhpRenderer;	
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -22,6 +28,9 @@ $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
 
+/**
+ *	MIDDLEWARE
+ */
 $app->add( function( Request $request, Response $response, callable $next ) {
     $uri = $request->getUri();
     $path = $uri->getPath();
@@ -34,33 +43,31 @@ $app->add( function( Request $request, Response $response, callable $next ) {
 
     return $next($request, $response);
 });
-
+// Check if an access_token is saved to the session or the user is currently attempting to log in
 $app->add( function( Request $request, Response $response, callable $next ) {
-
-	$path = $request->getUri()->getPath();
-	
+	$uri = $request->getUri();
+	$path = $uri->getPath();
     if( !isset( $_SESSION['access_token']) && $path != '/login' ){
-		
-		$load = ['modules' => ['form-login'], 'title' =>'Tremont UI Login'];
-		
-		return $this->renderer->render( $response, '/main.php', $load );
+		$onload = ['modules' => ['form-login'], 'title' =>'Tremont UI Login'];
+		return $this->renderer->render( $response, '/main.php', $onload );
 	}
 	
 	return $next( $request, $response );
-    
 });
 
 $app->get( '/', function( $request, $response, $args ){
 	
-	$load = ['title' => 'Tremont UI'];
+	$onload = ['title' => 'Tremont UI'];
 	
-	return $this->renderer->render( $response, '/main.php', $load );
+	return $this->renderer->render( $response, '/main.php', $onload );
 	
 });
 
 $app->post( '/login', function( $request, $response, $args ){
 	
 	print_r('test');
+	
+	
 	
 });
 
