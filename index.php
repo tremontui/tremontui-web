@@ -3,6 +3,7 @@
  * BOOTSTRAP
  */
 require_once './vendor/autoload.php';
+require_once './bootstrap.php';
 
 session_start();
 
@@ -63,9 +64,12 @@ $app->get( '/', function( $request, $response, $args ){
 	
 });
 
-$app->post( '/login', function( $request, $response, $args ){
+$app->post( '/login', function( $request, $response, $args ) use( $api_ini ){
 	
-	print_r('test');
+	$api_response = \Httpful\Request::get( $api_ini['url'] )
+		->send();
+	
+	print_r( $api_response->body );
 	
 	
 	
