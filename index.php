@@ -66,12 +66,11 @@ $app->get( '/', function( $request, $response, $args ){
 
 $app->post( '/login', function( $request, $response, $args ) use( $api_ini ){
 	
-	$api_response = \Httpful\Request::get( $api_ini['url'] )
+	$api_response = \Httpful\Request::get( $api_ini['url'] . 'users' )
+		->expectsJson()
 		->send();
 	
 	print_r( $api_response->body );
-	
-	
 	
 });
 
