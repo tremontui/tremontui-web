@@ -44,11 +44,11 @@ $app->add( function( Request $request, Response $response, callable $next ) {
 
     return $next($request, $response);
 });
-// Check if an access_token is saved to the session or the user is currently attempting to log in
+// Check if an SYSAUTH is saved to the session or the user is currently attempting to log in
 $app->add( function( Request $request, Response $response, callable $next ) {
 	$uri = $request->getUri();
 	$path = $uri->getPath();
-    if( !isset( $_SESSION['access_token']) && $path != '/login' ){
+    if( !isset( $_SESSION['SYSAUTH']) && $path != '/login' ){
 		$onload = ['modules' => ['form-login'], 'title' =>'Tremont UI Login'];
 		return $this->renderer->render( $response, '/main.php', $onload );
 	}
@@ -66,8 +66,13 @@ $app->get( '/', function( $request, $response, $args ){
 
 $app->post( '/login', function( $request, $response, $args ) use( $api_ini ){
 	
-	$api_response = \Httpful\Request::get( $api_ini['url'] . 'users' )
+	$params = $request->getParsedBody();
+	$username = $params['username'];
+	$password = $params['password'];	
+	
+	$api_response = \Httpful\Request::post( $api_ini['url'] . "users/verify_username?username=$username" )
 		->expectsJson()
+		//->body( "" )
 		->send();
 	
 	print_r( $api_response->body );
