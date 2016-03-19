@@ -72,10 +72,37 @@ $app->post( '/login', function( $request, $response, $args ) use( $api_ini ){
 	
 	$api_response = \Httpful\Request::post( $api_ini['url'] . "users/verify_username?username=$username" )
 		->expectsJson()
-		//->body( "" )
 		->send();
+	$api_response_body = $api_response->body;
 	
-	print_r( $api_response->body );
+	if( $api_response_body->api_success == 'true' ){
+		
+		$user_id = $api_response_body->result->User_ID;
+		
+		$api_verify_pass = \Httpful\Request::post( $api_ini['url'] . "users/verify_password?user_id=$user_id&password=$password" )
+			->expectsJson()
+			->send();
+		$api_verify_pass_body = $api_verify_pass->body;
+
+		if( $api_verify_pass_body->api_success == 'true' ){
+			
+			$verification = $api_verify_pass_body->result;
+			if( $verification->password_verified == 'true' ){
+				
+				$authentication = $verification->authentication;
+				$token = $authentication->token;
+				$expires =$authentication->expires;
+			
+				$_SESSION['SYSAUTH'] = $token;
+				$_SESSION['SYSAUTH_EXPIRES'] = $expires;
+				
+				return $response->withStatus(200)->withHeader('Location', './');
+				
+			}
+			
+		}
+		
+	}
 	
 });
 
