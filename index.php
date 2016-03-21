@@ -42,15 +42,42 @@ $app->add( function( Request $request, Response $response, callable $next ) {
         return $response->withRedirect((string)$uri, 301);
     }
 
-    return $next($request, $response);
+    return $next( $request, $response );
 });
 // Check if an SYSAUTH is saved to the session or the user is currently attempting to log in
-$app->add( function( Request $request, Response $response, callable $next ) {
+$app->add( function( Request $request, Response $response, callable $next ) use( $api_ini ){
 	$uri = $request->getUri();
 	$path = $uri->getPath();
     if( !isset( $_SESSION['SYSAUTH']) && $path != '/login' ){
-		$onload = ['modules' => ['form-login'], 'title' =>'Tremont UI Login'];
+		$onload = [
+			'modules'=>['form-login'],
+			'title'=>'Tremont UI Login'
+		];
 		return $this->renderer->render( $response, '/main.php', $onload );
+	} else if( $path != '/login' ) {
+		$token = $_SESSION['SYSAUTH'];
+		
+		$auth_user_result = \Httpful\Request::get( $api_ini['url'] . "authentications/user/$token" )
+			->addHeaders(['SYSAUTH'=>$token])
+			->expectsJson()
+			->send()->body;
+
+		if( $auth_user_result->api_success == 'false' ){
+			
+			print_r( $auth_user_result->result );
+			$onload = [
+				'modules'=>['form-login'],
+				'title'=>'Tremont UI Login'
+			];
+			unset( $_SESSION['SYSAUTH'], $_SESSION['SYSAUTH_EXPIRES'] );
+			return $this->renderer->render( $response, '/main.php', $onload );
+			
+		} else {
+
+			$_SESSION['user_details'] = $auth_user_result->result;
+			
+		}
+		
 	}
 	
 	return $next( $request, $response );
@@ -58,7 +85,10 @@ $app->add( function( Request $request, Response $response, callable $next ) {
 
 $app->get( '/', function( $request, $response, $args ){
 	
-	$onload = ['title' => 'Tremont UI'];
+	$onload = [
+		'modules'=>['dashboard'],
+		'title' => 'Tremont UI'
+	];
 	
 	return $this->renderer->render( $response, '/main.php', $onload );
 	
