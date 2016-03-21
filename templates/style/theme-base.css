@@ -43,6 +43,10 @@ form input[type="submit"]{
 	background-color:rgba(235,250,235,1);
 }
 
+a:hover, a:visited, a:link, a:active{
+	text-decoration:none;
+}
+
 h1{
 	text-align:center;
 	font-size:4.5em;
@@ -107,3 +111,25 @@ DASHBOARD
 #dash-form input[type="submit"]:hover{
 	background-color:rgba(235,235,235,1);
 }
+
+/*************************************
+TABLES
+*************************************/
+
+table{
+	width:100%;
+	margin:0 auto;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+tr, th, td{
+	border: 1px solid black;
+	height:50px;
+	font-size:1.4em;
+}
+
+th{
+	background-color:rgba(230,255,230,1);
+}
+

@@ -83,6 +83,21 @@ $app->add( function( Request $request, Response $response, callable $next ) use(
 	return $next( $request, $response );
 });
 
+$app->group( '/api', function() use( $api_ini ){
+	
+	$this->get( '/users', function( $request, $response, $args ) use( $api_ini ){
+		$token = $_SESSION['SYSAUTH'];
+		
+		$api_response = \Httpful\Request::get( $api_ini['url'] . "users")
+			->addHeaders(['SYSAUTH'=>$token])
+			//->expectsJson()
+			->send();
+		$api_response_body = $api_response->body;
+		return json_encode( $api_response_body->result->result );
+	});
+	
+});
+
 $app->get( '/', function( $request, $response, $args ){
 	
 	$onload = [
@@ -92,6 +107,74 @@ $app->get( '/', function( $request, $response, $args ){
 	
 	return $this->renderer->render( $response, '/main.php', $onload );
 	
+});
+
+$app->get( '/users', function( $request, $response, $args ) use( $api_ini ){
+	$token = $_SESSION['SYSAUTH'];
+	$onload = [
+		'modules'=>['table-users'],
+		'api_config'=>json_encode( $api_ini ),
+		'title'=>'Tremont UI Users'
+	];
+	
+	return $this->renderer->render( $response, '/main.php', $onload );
+});
+
+$app->get( '/account', function( $request, $response, $args ) use( $api_ini ){
+	$token = $_SESSION['SYSAUTH'];
+	
+	$onload = [
+		'modules'=>[],
+		'title'=>'Tremont UI - Channel Advisor Authentication'
+	];
+	
+	$api_response = \Httpful\Request::get( $api_ini['url'] . "channeladvisor/refresh_token/$token")
+		->addHeaders(['SYSAUTH'=>$token])
+		//->expectsJson()
+		->send();
+	$api_response_body = $api_response->body;
+	
+	if( $api_response_body->api_success == 'false' ){
+		$onload['modules'][] = 'ca-auth-series';
+	} else {
+		$onload['modules'][] = 'ca-auth-afirm';
+	}
+	
+	//print_r( $api_response_body );
+	
+	return $this->renderer->render( $response, '/main.php', $onload );
+	
+});
+
+$app->get( '/ca_authorize', function( $request, $response, $args ) use( $api_ini ){
+	$token = $_SESSION['SYSAUTH'];
+	
+	$api_response = \Httpful\Request::get( $api_ini['url'] . "channeladvisor/authorize" )
+		->addHeaders(['SYSAUTH'=>$token])
+		//->expectsJson()
+		->send();
+	$api_response_body = $api_response->body;
+	print_r( $api_response_body );
+	
+});
+
+$app->post( '/add_refresh', function( $request, $response, $args ) use( $api_ini ){
+	$token = $_SESSION['SYSAUTH'];
+	$params = $request->getParsedBody();
+	$refresh_token = $params['refresh'];
+
+	$api_response = \Httpful\Request::post( $api_ini['url'] . "channeladvisor/refresh_token?token=$refresh_token" )
+		->addHeaders(['SYSAUTH'=>$token])
+		//->expectsJson()
+		->send();
+	$api_response_body = $api_response->body;
+	print_r( $api_response_body );
+	if( $api_response_body->api_success == 'true' ){
+		return $response->withStatus(200)->withHeader('Location', './account');
+	} else {
+		print_r( $api_response_body );
+	}
+
 });
 
 $app->post( '/login', function( $request, $response, $args ) use( $api_ini ){

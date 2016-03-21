@@ -15,7 +15,9 @@
 	<div id="wrapper">
 		<div id="main-header">
 			<h1>
-				TREMONT UI
+				<a href="/">
+					TREMONT UI
+				</a>
 			</h1>
 			<?php
 				if( isset($_SESSION['user_details'] ) ){
