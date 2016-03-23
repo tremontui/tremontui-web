@@ -3,6 +3,7 @@ function GetAsynch( url, params ){
 		var request = new XMLHttpRequest();
 		request.open("GET", url + params, true);
 		request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+		request.withCredentials = true;
 		
 		request.onload = function(){
 			if(request.status == 200){
@@ -13,15 +14,15 @@ function GetAsynch( url, params ){
 
 		};
 		
-		request.onerror = function(){
-			reject(Error("Network Error"));
+		request.onerror = function( e ){
+			reject(Error("Network Error: " + e.target.status));
 		};
 		
 		request.send();
 	});
 }
 
-function PostAsynch( url, headers, params ){
+function PostAsynch( url, params ){
 	return new Promise( function( resolve, reject ){
 		var request = new XMLHttpRequest();
 		request.open("POST", url, true);
@@ -39,6 +40,6 @@ function PostAsynch( url, headers, params ){
 			reject(Error("Network Error"));
 		};
 		
-		request.send(params);
+		request.send( params );
 	});
 }

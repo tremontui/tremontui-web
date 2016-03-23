@@ -69,7 +69,7 @@ $app->add( function( Request $request, Response $response, callable $next ) use(
 				'modules'=>['form-login'],
 				'title'=>'Tremont UI Login'
 			];
-			unset( $_SESSION['SYSAUTH'], $_SESSION['SYSAUTH_EXPIRES'] );
+			unset( $_SESSION['SYSAUTH'], $_SESSION['SYSAUTH_EXPIRES'], $_SESSION['user_details'] );
 			return $this->renderer->render( $response, '/main.php', $onload );
 			
 		} else {
@@ -83,17 +83,35 @@ $app->add( function( Request $request, Response $response, callable $next ) use(
 	return $next( $request, $response );
 });
 
-$app->group( '/api', function() use( $api_ini ){
+$http_api = new Http_Service( $api_ini['url'] );
+if( isset( $_SESSION['SYSAUTH'] ) ){
+	$http_api->add_header( 'SYSAUTH', $_SESSION['SYSAUTH'] );
+}
+
+//API ROUTES
+$app->group( '/api', function() use( $http_api ){
 	
-	$this->get( '/users', function( $request, $response, $args ) use( $api_ini ){
-		$token = $_SESSION['SYSAUTH'];
+	$this->get( '/users', function( $request, $response, $args ) use( $http_api ){
 		
-		$api_response = \Httpful\Request::get( $api_ini['url'] . "users")
-			->addHeaders(['SYSAUTH'=>$token])
-			//->expectsJson()
-			->send();
-		$api_response_body = $api_response->body;
-		return json_encode( $api_response_body->result->result );
+		$api_response = $http_api->get( "users" )->body;
+
+		return json_encode( $api_response->result->result );
+		
+	});
+	
+	$this->post( '/users', function( $request, $response, $args ) use( $http_api ){
+		
+		$params = json_decode( $request->getParsedBody()['userData'], true );
+		$username = $params['username'];
+		$password = $params['password'];
+		$f_name = $params['f_name'];
+		$l_name = $params['l_name'];
+		$email = $params['email'];
+		
+		$api_response = $http_api->post( "users?username=$username&first_name=$f_name&last_name=$l_name&email=$email&password=$password" )->body;
+		
+		return json_encode( $api_response );
+		
 	});
 	
 });
@@ -106,6 +124,13 @@ $app->get( '/', function( $request, $response, $args ){
 	];
 	
 	return $this->renderer->render( $response, '/main.php', $onload );
+	
+});
+
+$app->get( '/logoff', function( $request, $response, $args ){
+	
+	$_SESSION = [];
+	return $response->withStatus(200)->withHeader('Location', './');
 	
 });
 

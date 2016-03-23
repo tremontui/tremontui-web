@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="templates/style/<?php //THEME NAME ?>theme-base.css">
 	<link rel="stylesheet" href="templates/style/<?php //THEME NAME ?>theme-base-responsive.css">
 	<script src="js/main.js"></script>
+	<script src="js/Promise.min.js"></script>
 <head>
 </head>
 <body>
@@ -26,7 +27,8 @@
 					$l_name = ucwords( $user->Last_Name );
 					$username = $user->Username;
 					$user_id = $user->User_ID;
-					echo "<h6>$f_name $l_name ($username) $user_id</h6>";
+					$logoff = '<a href="/logoff">logoff</a>';
+					echo "<h6>$f_name $l_name ($username) $user_id $logoff</h6>";
 				}
 			?>
 		</div>
