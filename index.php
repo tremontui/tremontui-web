@@ -238,9 +238,13 @@ $app->post( '/login', function( $request, $response, $args ) use( $api_ini ){
 				
 			}
 			
+		}  else {
+			
+			return $response->withStatus(401)->withHeader('Location', './');
+			
 		}
 		
-	}
+	} 
 	
 });
 
