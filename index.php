@@ -145,29 +145,56 @@ $app->get( '/users', function( $request, $response, $args ) use( $api_ini ){
 	return $this->renderer->render( $response, '/main.php', $onload );
 });
 
-$app->get( '/account', function( $request, $response, $args ) use( $api_ini ){
+$app->get( '/account', function( $request, $response, $args ) use( $http_api ){
 	$token = $_SESSION['SYSAUTH'];
 	
 	$onload = [
 		'modules'=>[],
 		'title'=>'Tremont UI - Channel Advisor Authentication'
 	];
+	$api_response = $http_api->get( "channeladvisor/refresh_token/$token" )->body;
 	
-	$api_response = \Httpful\Request::get( $api_ini['url'] . "channeladvisor/refresh_token/$token")
-		->addHeaders(['SYSAUTH'=>$token])
-		//->expectsJson()
-		->send();
-	$api_response_body = $api_response->body;
-	
-	if( $api_response_body->api_success == 'false' ){
+	if( $api_response->api_success == 'false' ){
 		$onload['modules'][] = 'ca-auth-series';
 	} else {
 		$onload['modules'][] = 'ca-auth-afirm';
 	}
 	
-	//print_r( $api_response_body );
-	
 	return $this->renderer->render( $response, '/main.php', $onload );
+	
+});
+
+$app->group( '/brand_manage', function() use( $http_api ){
+
+	$this->get( '', function( $request, $response, $args ) use( $http_api ){
+		
+		$onload = [
+			'modules'=>[
+				'research-brand',
+				'quick-brands'
+			],
+			'title'=>'Tremont UI - Brand Management'
+		];
+		
+		return $this->renderer->render( $response, '/main.php', $onload );
+		
+	});
+	
+	$this->get( '/research/overview', function( $request, $response, $args ) use( $http_api ){
+		
+		$params = $request->getQueryParams();
+		$brand_name = $params['brand_name'];
+		
+		$ca_select = 'select=Cost,TotalAvailableQuantity';
+		$ca_filter = 'filter=Brand%20eq%20' . $brand_name;
+		
+		$api_result = $http_api->get( "channeladvisor/products?$ca_select&$ca_filter" );
+		
+		print_r('<pre>');
+		print_r( $api_result );
+		print_r('</pre>');
+		
+	});
 	
 });
 
