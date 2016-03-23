@@ -1,9 +1,9 @@
 function GetAsynch( url, params ){
 	return new Promise(function(resolve, reject){
 		var request = new XMLHttpRequest();
-		request.open("GET", url + params, true);
+		request.open("GET", url + params, false);
 		request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-		request.withCredentials = true;
+		//request.withCredentials = true;
 		
 		request.onload = function(){
 			if(request.status == 200){
