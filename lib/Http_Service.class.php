@@ -51,6 +51,12 @@ class Http_Service{
 		
 	}
 	
+	public function testBaseUri(){
+		
+		return $this->base_uri;
+		
+	}
+	
 	public function get( $end_point ){
 		$expects = $this->expects;
 		

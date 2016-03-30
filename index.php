@@ -95,7 +95,7 @@ $app->group( '/api', function() use( $http_api ){
 		
 		$api_response = $http_api->get( "users" )->body;
 
-		return json_encode( $api_response->result->result );
+		return $response->withJson( $api_response->result->result );
 		
 	});
 	
@@ -164,15 +164,19 @@ $app->get( '/account', function( $request, $response, $args ) use( $http_api ){
 	
 });
 
-$app->group( '/brand_manage', function() use( $http_api ){
+$app->group( '/brand_manage', function() use( $api_ini, $http_api ){
 
-	$this->get( '', function( $request, $response, $args ) use( $http_api ){
+	$this->get( '', function( $request, $response, $args ) use( $api_ini, $http_api ){
+		
+		$quick_brands = $http_api->get( 'quick_brands/user/' . $_SESSION['user_details']->User_ID )->body->result->result;
 		
 		$onload = [
 			'modules'=>[
 				'research-brand',
 				'quick-brands'
 			],
+			'api_config'=>json_encode( $api_ini ),
+			'quick_brands'=>json_encode( $quick_brands ),
 			'title'=>'Tremont UI - Brand Management'
 		];
 		
@@ -183,16 +187,25 @@ $app->group( '/brand_manage', function() use( $http_api ){
 	$this->get( '/research/overview', function( $request, $response, $args ) use( $http_api ){
 		
 		$params = $request->getQueryParams();
-		$brand_name = $params['brand_name'];
+		$brand_name = str_replace( " ", "^", $params['brand_name'] );
 		
-		$ca_select = 'select=Cost,TotalAvailableQuantity';
-		$ca_filter = 'filter=Brand%20eq%20' . $brand_name;
+		$api_resource = "channeladvisor/brandoverview";
+		$api_params = "?brand=$brand_name";
 		
-		$api_result = $http_api->get( "channeladvisor/products?$ca_select&$ca_filter" );
+		$api_result = $http_api->get( $api_resource . $api_params );
+
+		return $response->withJson( $api_result->body );
 		
-		print_r('<pre>');
-		print_r( $api_result );
-		print_r('</pre>');
+	});
+	
+	$this->post( '/quick_brand', function( $request, $response, $args ) use( $http_api ){
+		$user_id = $_SESSION['user_details']->User_ID;
+		$params = $request->getParsedBody();
+		$brand_name = str_replace( " ", "^", $params['brand_name'] );
+
+		$uri = "quick_brands?user_id=$user_id&brand_name=$brand_name";
+		$http_api->post( $uri );
+		return $response->withStatus(200)->withHeader('Location', '/brand_manage');
 		
 	});
 	

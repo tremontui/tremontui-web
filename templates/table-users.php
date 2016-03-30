@@ -96,7 +96,7 @@ function PostNewUser( userData ){
 	PostAsynch( uri + 'api/users', 'userData=' + paramsString ).then(
 		function( response ){
 			var js_reponse = JSON.parse( response );
-			console.log( js_reponse );
+			console.log( response );
 			if( js_reponse['api_success'] == 'true' ){
 				location.reload();
 			}

@@ -117,6 +117,17 @@
 		font-size:1em;
 	}
 	
+	/*************************************
+	Quick Brands
+	*************************************/
+
+	.qb-box{
+		width:20%;
+		min-height:50px;
+		border: 1px solid black;
+		float:left;
+	}
+	
 }
 
 @media screen 
