@@ -164,6 +164,51 @@ $app->get( '/account', function( $request, $response, $args ) use( $http_api ){
 	
 });
 
+$app->group( '/update_inventory', function() use( $api_ini, $http_api ){
+	
+	$this->get( '', function( $request, $response, $args ) use( $api_ini, $http_api ){
+		$time_start = microtime(true);
+		$api_resource = "channeladvisor/updatebase";
+		
+		$api_result = $http_api->get( $api_resource )->body;
+		
+		print_r( '<pre>' );
+		print_r( $api_result );
+		print_r( '</pre>' );
+		
+		//
+		/*$first_item = $api_result[0]->channeladvisor_id;
+		print_r( $first_item );
+		$item_result = $http_api->post( "channeladvisor/itemupdate?ca_id=$first_item" )->body;
+		print_r( $item_result );*/
+		//
+		
+		$time_end = microtime(true);
+		$time = $time_end - $time_start;
+		
+		print_r( "Run Time : $time" );
+		
+	});
+	
+	$this->get( '/specs', function( $request, $response, $args ) use( $api_ini, $http_api ){
+		$time_start = microtime(true);
+		$api_resource = "channeladvisor/updatespecs";
+		
+		$api_result = $http_api->get( $api_resource )->body;
+		
+		print_r( '<pre>' );
+		print_r( $api_result );
+		print_r( '</pre>' );
+		
+		$time_end = microtime(true);
+		$time = $time_end - $time_start;
+		
+		print_r( "Run Time : $time" );
+		
+	});
+	
+});
+
 $app->group( '/brand_manage', function() use( $api_ini, $http_api ){
 
 	$this->get( '', function( $request, $response, $args ) use( $api_ini, $http_api ){
