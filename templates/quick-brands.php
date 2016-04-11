@@ -35,11 +35,11 @@ window.onload = function(){
 }
 
 function GetQuickBrandOverview( uri, parentdiv, brand_name ){
-	GetAsynch( uri  + 'brand_manage/research/overview', '?brand_name=' + brand_name ).then(
+	GetAsynch( uri  + 'brand_manage/research/overview', '?brand_name=' + escape( brand_name ) ).then(
 		function( response ){
 			var js_response = JSON.parse( response );
 			console.log( js_response );
-			Insert_QuickBrand( parentdiv, brand_name, js_response );
+			Insert_QuickBrand( parentdiv, brand_name, js_response['result'][0] );
 		},
 		function( error ){
 			console.log( error );
@@ -60,9 +60,9 @@ function Insert_QuickBrand( parentdiv, brand_name, col_data ){
 	
 	var tr2 = document.createElement( 'tr' );
 	var c1 = document.createElement( 'td' );
-	c1.innerHTML = col_data['TotalQty'];
+	c1.innerHTML = col_data['Quantity'];
 	var c2 = document.createElement( 'td' );
-	c2.innerHTML = col_data['TotalVal'];
+	c2.innerHTML = col_data['Value'];
 	tr2.appendChild( c1 );
 	tr2.appendChild( c2 );
 	

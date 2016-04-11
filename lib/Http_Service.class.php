@@ -62,7 +62,8 @@ class Http_Service{
 		
 		$result = \Httpful\Request::get( $this->base_uri . $end_point )
 			->addHeaders( $this->required_headers )
-			->body( $this->temp_body )
+			//->sendsJson()
+			->body( json_encode( $this->temp_body ) )
 			->$expects()
 			->send();
 		

@@ -122,7 +122,8 @@
 	*************************************/
 
 	.qb-box{
-		width:20%;
+		margin-bottom:10px;
+		width:calc(20% - 2px);
 		min-height:50px;
 		border: 1px solid black;
 		float:left;
