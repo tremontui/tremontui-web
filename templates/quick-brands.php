@@ -9,7 +9,7 @@
 		foreach( $qb as $quick_brand ){
 			$brand_name = $quick_brand['Brand_Name'];
 			
-			$html = '<div class="qb-box" id="qb-' . $brand_name . '"><h6>' . $brand_name . '</h6></div>';
+			$html = '<div class="qb-box" id="qb-' . $brand_name . '"><h6>' . $brand_name . '</h6><input type="button" value="delete" onclick="Delete_QuickBrand(' . "'" . $brand_name . "'" . ')"/></div>';
 			echo $html;
 		}
 	
@@ -32,6 +32,10 @@ window.onload = function(){
 		
 	}
 	
+}
+
+function Delete_QuickBrand( brand_name ){
+	console.log('DELETING: ' + brand_name);
 }
 
 function GetQuickBrandOverview( uri, parentdiv, brand_name ){
