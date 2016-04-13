@@ -363,23 +363,39 @@ $app->group( '/brand_manage', function() use( $api_ini, $http_api ){
 		
 	});
 	
-	$this->post( '/quick_brand', function( $request, $response, $args ) use( $http_api ){
-		$user_id = $_SESSION['user_details']->User_ID;
-		$params = $request->getParsedBody();
+	$this->group( '/quick_brand', function() use( $http_api ){
 		
-		$brand_name = check_replacers( $params['brand_name'] );
+		$this->post( '', function( $request, $response, $args ) use( $http_api ){
+			$user_id = $_SESSION['user_details']->User_ID;
+			$params = $request->getParsedBody();
+			
+			$brand_name = check_replacers( $params['brand_name'] );
 
-		$uri = "quick_brands?user_id=$user_id&brand_name=$brand_name";
-		$http_api->post( $uri );
-		return $response->withStatus(200)->withHeader('Location', '/brand_manage');
-		//print_r( $brand_name );
+			$uri = "quick_brands?user_id=$user_id&brand_name=$brand_name";
+			$http_api->post( $uri );
+			return $response->withStatus(200)->withHeader('Location', '/brand_manage');
+			//print_r( $brand_name );
+			
+		});
+		
+		$this->get( '/delete', function( $request, $response, $args ) use( $http_api ){
+			$user_id = $_SESSION['user_details']->User_ID;
+			$params = $request->getQueryParams();
+			
+			$brand_name = check_replacers( $params['brand_name'] );
+
+			$uri = "quick_brands/delete/$brand_name?user_id=$user_id";
+			$api_result = $http_api->post( $uri )->body;
+
+			return $response->withJson( $api_result, 200 );
+		});
 		
 	});
 	
 });
 
 function check_replacers( $string ){
-	$replacers = [" "=>"^s^", "&"=>"^a^"];
+	$replacers = [" "=>"zqzszqz", "&"=>"zqzazqz"];
 	$new_string = $string;
 	foreach( $replacers as $find=>$replace ){
 		$new_string = str_replace( $find, $replace, $new_string );
@@ -389,7 +405,7 @@ function check_replacers( $string ){
 }
 
 function revert_replacers( $string ){
-	$replacers = ["^s^"=>" ", "^a^"=>"&"];
+	$replacers = ["zqzszqz"=>" ", "zqzazqz"=>"&"];
 	$new_string = $string;
 	foreach( $replacers as $find=>$replace ){
 		$new_string = str_replace( $find, $replace, $new_string );

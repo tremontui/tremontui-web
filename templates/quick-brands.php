@@ -36,6 +36,15 @@ window.onload = function(){
 
 function Delete_QuickBrand( brand_name ){
 	console.log('DELETING: ' + brand_name);
+	GetAsynch( uri  + 'brand_manage/quick_brand/delete', '?brand_name=' + escape( brand_name ) ).then(
+		function( response ){
+			var js_response = JSON.parse( response );
+			console.log( js_response );
+		},
+		function( error ){
+			console.log( error );
+		}
+	);
 }
 
 function GetQuickBrandOverview( uri, parentdiv, brand_name ){

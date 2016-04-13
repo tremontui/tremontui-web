@@ -88,6 +88,20 @@ class Http_Service{
 		
 	}
 	
+	public function delete( $end_point ){
+		$expects = $this->expects;
+		
+		$result = \Httpful\Request::delete( $this->base_uri . $end_point )
+			->addHeaders( $this->required_headers )
+			//->body( $this->temp_body )
+			->$expects()
+			->send();
+		
+		$this->reset();
+		
+		return $result;
+		
+	}
 	
 }
 
