@@ -40,6 +40,7 @@ function Delete_QuickBrand( brand_name ){
 		function( response ){
 			var js_response = JSON.parse( response );
 			console.log( js_response );
+			location.reload();
 		},
 		function( error ){
 			console.log( error );
