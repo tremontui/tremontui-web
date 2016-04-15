@@ -27,8 +27,9 @@
 					$l_name = ucwords( $user->Last_Name );
 					$username = $user->Username;
 					$user_id = $user->User_ID;
+					$docs = '<a href="/documentation">docs</a>';
 					$logoff = '<a href="/logoff">logoff</a>';
-					echo "<h6>$f_name $l_name ($username) $user_id $logoff</h6>";
+					echo "<h6>$f_name $l_name ($username) $user_id $logoff $docs</h6>";
 				}
 			?>
 		</div>

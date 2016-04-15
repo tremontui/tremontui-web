@@ -134,6 +134,28 @@ $app->get( '/logoff', function( $request, $response, $args ){
 	
 });
 
+$app->group( '/documentation', function(){
+	
+	$this->get( '', function( $request, $response, $args ){
+		$params = $request->getQueryParams();
+		$topic = '';
+		if( isset( $params['topic'] ) ){
+			$topic = $params['topic'];
+		}
+		
+		$token = $_SESSION['SYSAUTH'];
+		$onload = [
+			'modules'=>['documentation'],
+			'topic'=>$topic,
+			'title'=>'Tremont UI - Documentation'
+		];
+		
+		return $this->renderer->render( $response, '/main.php', $onload );
+	});
+	
+	
+});
+
 $app->get( '/users', function( $request, $response, $args ) use( $api_ini ){
 	$token = $_SESSION['SYSAUTH'];
 	$onload = [
