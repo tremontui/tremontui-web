@@ -129,6 +129,19 @@
 		float:left;
 	}
 	
+		/*************************************
+	Brand Ticker
+	*************************************/
+	#brand-ticker{
+		width:100%;
+		height:35px;
+		background-color:green;
+	}
+	
+	#brand-ticker .ticker_item{
+		line-height:35px;
+	}
+	
 }
 
 @media screen 

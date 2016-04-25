@@ -49,7 +49,7 @@ function Delete_QuickBrand( brand_name ){
 }
 
 function GetQuickBrandOverview( uri, parentdiv, brand_name ){
-	GetAsynch( uri  + 'brand_manage/research/overview', '?brand_name=' + escape( brand_name ) ).then(
+	GetAsynch( uri  + 'api/brands_canonical', '?brand_name=' + escape( brand_name ) ).then(
 		function( response ){
 			var js_response = JSON.parse( response );
 			console.log( js_response );

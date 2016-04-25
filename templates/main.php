@@ -6,10 +6,10 @@
 			echo $title;
 		?>
 	</title>
-	<link rel="stylesheet" href="templates/style/<?php //THEME NAME ?>theme-base.css">
-	<link rel="stylesheet" href="templates/style/<?php //THEME NAME ?>theme-base-responsive.css">
-	<script src="js/main.js"></script>
-	<script src="js/Promise.min.js"></script>
+	<link rel="stylesheet" href="/templates/style/<?php //THEME NAME ?>theme-base.css">
+	<link rel="stylesheet" href="/templates/style/<?php //THEME NAME ?>theme-base-responsive.css">
+	<script src="/js/main.js"></script>
+	<script src="/js/Promise.min.js"></script>
 <head>
 </head>
 <body>
