@@ -1,0 +1,32 @@
+formatter.name: progress
+
+suites:
+  tremont_suite:
+    namespace: TremontuiWeb
+    spec_prefix: spec
+    src_path: TremontuiWeb\src
+    spec_path: TremontuiWeb
+
+  models_suite:
+      namespace: TremontuiWeb\Models
+      spec_prefix: spec
+      src_path: TremontuiWeb\src
+      spec_path: TremontuiWeb
+
+  model_objects_suite:
+        namespace: TremontuiWeb\Models\Entities
+        spec_prefix: spec
+        src_path: TremontuiWeb\src
+        spec_path: TremontuiWeb
+
+  controllers_suite:
+        namespace: TremontuiWeb\Controllers
+        spec_prefix: spec
+        src_path: TremontuiWeb\src
+        spec_path: TremontuiWeb
+
+  views_suite:
+        namespace: TremontuiWeb\Views
+        spec_prefix: spec
+        src_path: TremontuiWeb\src
+        spec_path: TremontuiWeb
