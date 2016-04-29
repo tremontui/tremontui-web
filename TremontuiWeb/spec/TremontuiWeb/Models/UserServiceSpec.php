@@ -4,6 +4,7 @@ namespace spec\TremontuiWeb\Models;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use spec\TremontuiWeb\Models\Entities\PDODataSource;
 use TremontuiWeb\Models\Entities\User;
 use TremontuiWeb\Models\Entities\DataSource;
 

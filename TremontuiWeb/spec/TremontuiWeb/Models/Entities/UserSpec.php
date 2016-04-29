@@ -12,6 +12,14 @@ class UserSpec extends ObjectBehavior
 		$this->shouldHaveType('TremontuiWeb\Models\Entities\User');
 	}
 
+	function it_can_be_given_a_datasource_id(){
+		$id = 23;
+		$this->setID($id);
+
+		$this->shouldHaveID();
+		$this->getID()->shouldBe($id);
+	}
+
 	function it_can_be_given_a_username()
 	{
 		$username = "adminjones123";

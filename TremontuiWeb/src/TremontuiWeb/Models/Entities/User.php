@@ -10,6 +10,8 @@ class User
 	protected $lastName;
 	protected $email;
 	protected $passwordHash;
+	protected $id;
+
 
 	public function setUsername($username)
 	{
@@ -106,14 +108,33 @@ class User
 		return password_hash($password, PASSWORD_DEFAULT);
 	}
 
-    public function verifyPassword($password)
-    {
+	public function verifyPassword($password)
+	{
 		return password_verify($password, $this->passwordHash);
-    }
+	}
 
-    public function getPasswordHash()
+	public function getPasswordHash()
+	{
+		return $this->passwordHash;
+	}
+
+	public function setID($id)
+	{
+		$this->id = $id;
+	}
+
+	public function hasID()
+	{
+		if (!empty($this->id)) {
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+    public function getID()
     {
-        return $this->passwordHash;
+        return $this->id;
     }
 
 }

@@ -4,7 +4,8 @@
         "slim/php-view": "^2.1",
         "nategood/httpful": "^0.2.20",
         "slim/flash": "^0.1.0",
-        "phpspec/phpspec": "3.0.x-dev"
+        "phpspec/phpspec": "3.0.x-dev",
+        "fzaninotto/faker": "1.6.x-dev"
     },
     "autoload": {
         "psr-4": {

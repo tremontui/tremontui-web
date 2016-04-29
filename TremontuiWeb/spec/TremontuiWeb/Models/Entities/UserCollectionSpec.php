@@ -40,4 +40,22 @@ class UserCollectionSpec extends ObjectBehavior
 		$this->getUser($username)->shouldBe($user1);
 		$this->getUser($username)->shouldNotBe($user2);
 	}
+
+	function it_can_get_the_first_user(User $user1, User $user2, User $user3)
+	{
+		$this->add($user1);
+		$this->add($user2);
+		$this->add($user3);
+
+		$this->getFirstUser()->shouldBe($user1);
+	}
+
+	function it_can_get_the_most_recently_added_user(User $user1, User $user2, User $user3)
+	{
+		$this->add($user1);
+		$this->add($user2);
+		$this->add($user3);
+
+		$this->getLastUser()->shouldBe($user3);
+	}
 }

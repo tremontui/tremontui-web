@@ -46,10 +46,29 @@ class UserCollection implements \Countable
 			print_r('<pre>');
 			print_r($this->collection);
 			print_r('</pre>');
+
 			return FALSE;
 		}
 
 		throw new Exception('InvalidArgumentException');
 
+	}
+
+	public function getFirstUser()
+	{
+		if (!empty($this->collection)) {
+			return $this->collection[0];
+		}
+
+		return FALSE;
+	}
+
+	public function getLastUser()
+	{
+		if (!empty($this->collection)) {
+			return $this->collection[($this->count() - 1)];
+		}
+
+		return FALSE;
 	}
 }
