@@ -2,7 +2,9 @@
 
 namespace TremontuiWeb\Models\Entities;
 
-class User
+use JsonSerializable;
+
+class User implements JsonSerializable
 {
 
 	protected $username;
@@ -12,6 +14,23 @@ class User
 	protected $passwordHash;
 	protected $id;
 
+	public function __construct()
+	{
+
+	}
+
+	public static function withPayload(array $payload){
+		$instance = new self();
+		$instance->fillFromPayload($payload);
+
+		return $instance;
+	}
+
+	private function fillFromPayload(array $payload){
+		foreach($payload AS $key=>$value){
+			$this->$key = $value;
+		}
+	}
 
 	public function setUsername($username)
 	{
@@ -137,4 +156,8 @@ class User
         return $this->id;
     }
 
+	function jsonSerialize()
+	{
+		return (object) get_object_vars($this);
+	}
 }

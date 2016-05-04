@@ -13,6 +13,8 @@ session_start();
 use Slim\Views\PhpRenderer;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use TremontuiWeb\Models\Entities\ReadRequest;
+use TremontuiWeb\Models\Entities\User;
 
 $configuration = [
 	'settings' => [
@@ -38,16 +40,33 @@ if (isset($_SESSION['SYSAUTH'])) {
  */
 $app->add(new MW_TrailingSlashes());
 // Check if an SYSAUTH is saved to the session or the user is currently attempting to log in
-$app->add(new MW_CheckAuth($http_api));
+//$app->add(new MW_CheckAuth($http_api));
 
 //API ROUTES
 $app->group('/api', function () use ($http_api) {
 
 	$this->get('/users', function ($request, $response, $args) use ($http_api) {
 
-		$api_response = $http_api->get("users")->body;
+		$restLink = new \TremontuiWeb\Models\Entities\RESTDataLink('https://192.168.1.80', '544');
+		$restLink->addHeaders('SYSAUTH: 2e7161716f25f648c3e38f6153778438ce18de07393ff1487d12b156ce29b9fa');
+		$restLink->setGet();
 
-		return $response->withJson($api_response->result->result);
+		$restSource = new \TremontuiWeb\Models\Entities\RESTDataSource();
+		$restSource->setDataLink($restLink);
+
+		$readRequest = new ReadRequest();
+		$payloadMap = [
+			'username'     => 'Username',
+			'firstName'    => 'First_Name',
+			'lastName'     => 'Last_Name',
+			'email'        => 'Email',
+			'id'           => 'ID'
+		];
+		$readRequest->defineSubjectEntity(new User(),$payloadMap , 'users');
+
+		$api_response = $restSource->read($readRequest);
+		//print_r($api_response);
+		return $response->withJson($api_response);
 
 	});
 

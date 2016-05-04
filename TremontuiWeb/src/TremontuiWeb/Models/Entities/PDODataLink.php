@@ -39,4 +39,10 @@ class PDODataLink implements DataLink
 	{
 		return $this->dataLang;
 	}
+
+	public function queryRequest($request, $params = [])
+	{
+		$p_statement = $this->connection->prepare($request);
+		$response = $p_statement->execute($params);
+	}
 }

@@ -15,9 +15,13 @@ class ReadRequestSpec extends ObjectBehavior
     }
 
     function it_can_be_given_a_subject_entity_to_expect_to_read(User $user_entity){
-        $this->defineSubjectEntity($user_entity);
+        $user_entity = new User();
+        $set_name = 'users';
+        $this->defineSubjectEntity($user_entity,[] , $set_name);
 
         $this->shouldHaveSubjectEntity();
+        $this->getSubjectEntityType()->shouldBe('TremontuiWeb\Models\Entities\User');
+        $this->getSubjectEntitySetName()->shouldBe('users');
     }
 
     function it_can_designate_fields_to_limit_returns(){
