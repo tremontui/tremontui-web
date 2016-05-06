@@ -4,7 +4,7 @@ namespace TremontuiWeb\Models\Entities;
 
 use JsonSerializable;
 
-class User implements JsonSerializable
+class User implements JsonSerializable, Creatable
 {
 
 	protected $username;
