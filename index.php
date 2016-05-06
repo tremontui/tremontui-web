@@ -13,8 +13,11 @@ session_start();
 use Slim\Views\PhpRenderer;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use TremontuiWeb\Controllers\UserController;
 use TremontuiWeb\Models\Entities\ReadRequest;
+use TremontuiWeb\Models\Entities\RESTDataLink;
 use TremontuiWeb\Models\Entities\User;
+use TremontuiWeb\Res;
 
 $configuration = [
 	'settings' => [
@@ -30,61 +33,53 @@ $container['flash'] = function () {
 	return new \Slim\Flash\Messages();
 };
 
+$res = new Res();
+$rest_link = new RESTDataLink($api_ini['url_host'], $api_ini['url_port']);
+//$rest_link = new RESTDataLink($api_ini['url_host'], $api_ini['url_port']);
+//$rest_link->addHeaders('SYSAUTH: 2e7161716f25f648c3e38f6153778438ce18de07393ff1487d12b156ce29b9fa');
+//$res->setRestDataLink($rest_link);
 $http_api = new Http_Service($api_ini['url']);
 if (isset($_SESSION['SYSAUTH'])) {
 	$http_api->add_header('SYSAUTH', $_SESSION['SYSAUTH']);
+	$rest_link->addHeaders('SYSAUTH: ' . $_SESSION['SYSAUTH']);
 }
-
+$res->setRestDataLink($rest_link);
 /**
  *    MIDDLEWARE
  */
 $app->add(new MW_TrailingSlashes());
 // Check if an SYSAUTH is saved to the session or the user is currently attempting to log in
-//$app->add(new MW_CheckAuth($http_api));
+$app->add(new MW_CheckAuth($http_api));
 
 //API ROUTES
-$app->group('/api', function () use ($http_api) {
+$app->group('/api', function () use ($http_api, $res) {
 
-	$this->get('/users', function ($request, $response, $args) use ($http_api) {
+	$this->group('/users', function() use ($http_api,$res){
 
-		$restLink = new \TremontuiWeb\Models\Entities\RESTDataLink('https://192.168.1.80', '544');
-		$restLink->addHeaders('SYSAUTH: 2e7161716f25f648c3e38f6153778438ce18de07393ff1487d12b156ce29b9fa');
-		$restLink->setGet();
+		$user_controller = new UserController($res->getRestDataLink());
 
-		$restSource = new \TremontuiWeb\Models\Entities\RESTDataSource();
-		$restSource->setDataLink($restLink);
+		$this->get('', function ($request, $response, $args) use ($user_controller) {
+			return $response->withJson($user_controller->readAllUsers());
+		});
 
-		$readRequest = new ReadRequest();
-		$payloadMap = [
-			'username'     => 'Username',
-			'firstName'    => 'First_Name',
-			'lastName'     => 'Last_Name',
-			'email'        => 'Email',
-			'id'           => 'ID'
-		];
-		$readRequest->defineSubjectEntity(new User(),$payloadMap , 'users');
+		$this->post('', function ($request, $response, $args) use ($http_api,$user_controller) {
+			
+			$params = json_decode($request->getParsedBody()['userData'], TRUE);
+			$username = $params['username'];
+			$password = $params['password'];
+			$f_name = $params['f_name'];
+			$l_name = $params['l_name'];
+			$email = $params['email'];
 
-		$api_response = $restSource->read($readRequest);
-		//print_r($api_response);
-		return $response->withJson($api_response);
+			$api_response = $http_api->post("users?username=$username&first_name=$f_name&last_name=$l_name&email=$email&password=$password")
+				->body;
 
+			return json_encode($api_response);
+
+		});
 	});
 
-	$this->post('/users', function ($request, $response, $args) use ($http_api) {
 
-		$params = json_decode($request->getParsedBody()['userData'], TRUE);
-		$username = $params['username'];
-		$password = $params['password'];
-		$f_name = $params['f_name'];
-		$l_name = $params['l_name'];
-		$email = $params['email'];
-
-		$api_response = $http_api->post("users?username=$username&first_name=$f_name&last_name=$l_name&email=$email&password=$password")
-			->body;
-
-		return json_encode($api_response);
-
-	});
 
 	$this->get('/brands_canonical', function ($request, $response, $args) use ($http_api) {
 

@@ -156,6 +156,20 @@ class User implements JsonSerializable
         return $this->id;
     }
 
+	public function validateCreatable(){
+		if(
+			$this->hasEmail() &&
+			$this->hasFirstName() &&
+			$this->hasLastName() &&
+			$this->hasUsername() &&
+			$this->hasSafePassword()
+		){
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
 	function jsonSerialize()
 	{
 		return (object) get_object_vars($this);

@@ -67,7 +67,13 @@ class RESTDataLink implements DataLink
     public function setGet()
     {
         $this->method = CURLOPT_HTTPGET;
+		return $this;
     }
+
+	public function setPost(){
+		$this->method = CURLOPT_POST;
+		return $this;
+	}
 
     public function getMethod()
     {

@@ -34,4 +34,10 @@ class RESTDataLinkSpec extends ObjectBehavior
 
         $this->getMethod()->shouldBe(CURLOPT_HTTPGET);
     }
+
+    function it_can_set_method_to_post(){
+        $this->setPost();
+
+        $this->getMethod()->shouldBe(CURLOPT_POST);
+    }
 }

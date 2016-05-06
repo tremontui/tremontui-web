@@ -11,6 +11,11 @@ class RESTDataSource implements DataSource
 		$this->restDataLink = $data_link;
 	}
 
+	public function accessMemberMethod($member, $method){
+		return $this->$member->$method();
+		//return $this->restDataLink->$member();
+	}
+
 	public function create(CreateRequest $c)
 	{
 		// TODO: Implement create() method.

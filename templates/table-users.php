@@ -111,10 +111,10 @@ function PostNewUser( userData ){
 function GetAllUsers( uri, table ){
 	GetAsynch( uri  + 'api/users', '' ).then(
 		function( response ){
-			var js_reponse = JSON.parse( response );
-			console.log( js_reponse );
-			for( var i = 0, max_i = js_reponse.length; i < max_i; i++ ){
-				InsertRow_User_Table( table, js_reponse[i] );
+			var js_response = JSON.parse( response );
+			console.log( js_response );
+			for( var i = 0, max_i = js_response.length; i < max_i; i++ ){
+				InsertRow_User_Table( table, js_response[i] );
 			}
 		},
 		function( error ){

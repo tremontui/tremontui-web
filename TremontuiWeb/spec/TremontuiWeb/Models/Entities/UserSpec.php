@@ -74,4 +74,21 @@ class UserSpec extends ObjectBehavior
 		$this->verifyPassword($password)->shouldBe(TRUE);
 		$this->verifyPassword("wrong_password")->shouldNotBe(TRUE);
 	}
+
+	function it_can_test_if_it_has_a_fully_fleshed_out_user_for_creating_on_a_data_source(){
+		$first_name = 'test';
+		$last_name = 'jones';
+		$username = 'testjones123';
+		$email = 'test.jones@gmail.com';
+		$password = 'awesomePassword';
+
+		$this->setUsername($username);
+		$this->setFirstName($first_name);
+		$this->setLastName($last_name);
+		$this->setEmail($email);
+		$this->setPassword($password);
+
+		$this->validateCreatable()->shouldBe(TRUE);
+	}
+
 }
