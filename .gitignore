@@ -2,3 +2,4 @@
 .idea/blade.xml
 vendor/
 *.xml
+templates/ng
