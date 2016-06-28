@@ -111,10 +111,10 @@ function PostNewUser( userData ){
 function GetAllUsers( uri, table ){
 	GetAsynch( uri  + 'api/users', '' ).then(
 		function( response ){
-			var js_reponse = JSON.parse( response );
-			console.log( js_reponse );
-			for( var i = 0, max_i = js_reponse.length; i < max_i; i++ ){
-				InsertRow_User_Table( table, js_reponse[i] );
+			var js_response = JSON.parse( response );
+			console.log( js_response );
+			for( var i = 0, max_i = js_response.length; i < max_i; i++ ){
+				InsertRow_User_Table( table, js_response[i] );
 			}
 		},
 		function( error ){
@@ -126,15 +126,15 @@ function GetAllUsers( uri, table ){
 function InsertRow_User_Table( tbody, colData ){
 	var row = document.createElement( 'tr' );
 	var c1 = document.createElement( 'td' );
-	c1.innerHTML = colData['ID'];
+	c1.innerHTML = colData['id'];
 	var c2 = document.createElement( 'td' );
-	c2.innerHTML = colData['Username'];
+	c2.innerHTML = colData['username'];
 	var c3 = document.createElement( 'td' );
-	c3.innerHTML = colData['First_Name'];
+	c3.innerHTML = colData['firstName'];
 	var c4 = document.createElement( 'td' );
-	c4.innerHTML = colData['Last_Name'];
+	c4.innerHTML = colData['lastName'];
 	var c5 = document.createElement( 'td' );
-	c5.innerHTML = colData['Email'];
+	c5.innerHTML = colData['email'];
 	
 	row.appendChild( c1 );
 	row.appendChild( c2 );

@@ -6,6 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
+    'PhpSpec' => array($vendorDir . '/phpspec/phpspec/src'),
     'Httpful' => array($vendorDir . '/nategood/httpful/src'),
+    'Diff' => array($vendorDir . '/phpspec/php-diff/lib'),
 );
