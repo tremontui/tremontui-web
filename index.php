@@ -13,6 +13,7 @@ session_start();
 use Slim\Views\PhpRenderer;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use TremontuiWeb\Controllers\ChannelAdvisorProductsController;
 use TremontuiWeb\Controllers\UserController;
 use TremontuiWeb\Models\Entities\ReadRequest;
 use TremontuiWeb\Models\Entities\RESTDataLink;
@@ -35,9 +36,9 @@ $container['flash'] = function () {
 
 $res = new Res();
 $rest_link = new RESTDataLink($api_ini['url_host'], $api_ini['url_port']);
-//$rest_link = new RESTDataLink($api_ini['url_host'], $api_ini['url_port']);
-//$rest_link->addHeaders('SYSAUTH: 2e7161716f25f648c3e38f6153778438ce18de07393ff1487d12b156ce29b9fa');
-//$res->setRestDataLink($rest_link);
+/*$rest_link = new RESTDataLink($api_ini['url_host'], $api_ini['url_port']);
+$rest_link->addHeaders('SYSAUTH: 2e7161716f25f648c3e38f6153778438ce18de07393ff1487d12b156ce29b9fa');*/
+$res->setRestDataLink($rest_link);
 $http_api = new Http_Service($api_ini['url']);
 if (isset($_SESSION['SYSAUTH'])) {
 	$http_api->add_header('SYSAUTH', $_SESSION['SYSAUTH']);
@@ -45,14 +46,35 @@ if (isset($_SESSION['SYSAUTH'])) {
 }
 $res->setRestDataLink($rest_link);
 /**
- *    MIDDLEWARE
+ *    MIDDLEWARE¡¡
  */
 $app->add(new MW_TrailingSlashes());
-// Check if an SYSAUTH is saved to the session or the user is currently attempting to log in
+// Check if an SYSAUTH is saved to ¡¡the session or the user is currently attempting to log in
 $app->add(new MW_CheckAuth($http_api));
 
-//API ROUTES
+//API ROUTES¡
 $app->group('/api', function () use ($http_api, $res) {
+
+	$this->get('/ping', function() use($http_api){
+		$api_response = $http_api->get('ping')->body;
+		return json_encode($api_response);
+	});
+
+	$this->group('/channel_advisor', function() use($http_api, $res){
+
+		$ca_controller = new ChannelAdvisorProductsController($res->getRestDataLink()->setFromDB(FALSE));
+
+		$this->get('/product_by_upc', function($request, $response, $args) use($http_api, $ca_controller){
+			$params = $request->getQueryParams();
+			$upc = $params['upc'];
+
+			/*$api_response = $http_api->get("channeladvisor/products")->body;
+
+			return json_encode($api_response);*/
+			return $response->withJson($ca_controller->readProductByUPC($upc));
+		});
+
+	});
 
 	$this->group('/users', function() use ($http_api,$res){
 
@@ -198,23 +220,6 @@ $app->get('/account', function ($request, $response, $args) use ($http_api) {
 
 });
 
-/*$app->group( '/update_inventory', function() use( $api_ini, $http_api ){
-	
-	$this->get( '', function( $request, $response, $args ) use( $api_ini, $http_api ){
-		$token = $_SESSION['SYSAUTH'];
-	
-		$onload = [
-			'modules'=>['update_inventory'],
-			'api_config'=>json_encode( $api_ini ),
-			'title'=>'Tremont UI - Update Inventory'
-		];
-		
-		return $this->renderer->render( $response, '/main.php', $onload );
-		
-	});
-	
-});*/
-
 $app->group('/channel_advisor', function () use ($api_ini, $http_api) {
 
 	$this->get('/base_items', function ($request, $response, $args) use ($api_ini, $http_api) {
@@ -271,7 +276,17 @@ $app->post('/initialize_items', function ($request, $response, $args) use ($api_
 
 $app->group('/inventory_interface', function () use ($api_ini, $http_api) {
 
-	$this->get('', function ($request, $response, $args) use ($api_ini, $http_api) {
+	$this->get('', function($requst, $response, $args) use ($api_ini, $http_api){
+
+		$onload = [
+			'api_config' => json_encode($api_ini),
+			'title'      => 'Tremont UI - Inventory Interface'
+		];
+
+		return $this->renderer->render($response, '/ng/npl_ng_invtask/index.php', $onload);
+	});
+
+	/*$this->get('', function ($request, $response, $args) use ($api_ini, $http_api) {
 
 		$onload = [
 			'api_config' => json_encode($api_ini),
@@ -280,7 +295,7 @@ $app->group('/inventory_interface', function () use ($api_ini, $http_api) {
 
 		return $this->renderer->render($response, '/inventory_interface.php', $onload);
 
-	});
+	});*/
 });
 
 $app->group('/brand_manage', function () use ($api_ini, $http_api) {

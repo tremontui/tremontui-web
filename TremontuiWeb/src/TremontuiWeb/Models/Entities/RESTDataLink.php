@@ -8,6 +8,7 @@ class RESTDataLink implements DataLink
 	protected $headerCollection;
 	protected $method;
 	protected $port;
+	protected $fromDB = TRUE;
 
 	public function __construct($connection, $port = '8080')
 	{
@@ -36,11 +37,20 @@ class RESTDataLink implements DataLink
 			return 'curl error: ' . curl_error($ch);
 		} else {
 			$decoded_response = json_decode($output, true);
-			if($decoded_response['api_success'] && $decoded_response['result']['db_success']) {
-				return $decoded_response['result']['result'];
+			if($this->fromDB) {
+				if ($decoded_response['api_success'] && $decoded_response['result']['db_success']) {
+					return $decoded_response['result']['result'];
+				}
+			} else {
+				return $decoded_response['value']; // value is for CA
 			}
 		}
 
+	}
+
+	public function setFromDB($bool){
+		$this->fromDB = $bool;
+		return $this;
 	}
 
     public function addHeaders($headers)

@@ -27,7 +27,7 @@ class RESTDataSource implements DataSource
 		$response = $this->restDataLink->queryRequest($resource);
 		$payload_map = $r->getPayloadMap();
 		$entity_type = $r->getSubjectEntityType();
-
+		
 		$returns = [];
 		foreach($response AS $item){
 			$returns[] = $this->newInstanceFromPayload($payload_map, $entity_type, $item);
@@ -38,8 +38,14 @@ class RESTDataSource implements DataSource
 
 	private function newInstanceFromPayload($payload_map, $entity_type, $data_set){
 		$payload = [];
-		foreach($payload_map AS $key=> $value){
-			$payload[$key] = $data_set[$value];
+		if(is_array($data_set)){
+			foreach($payload_map AS $key=>$value){
+				$payload[$key] = $data_set[$value];
+			}
+		} else if (is_object($data_set)){
+			foreach($payload_map AS $key=>$value){
+				$payload[$key] = $data_set[$value];
+			}
 		}
 		return $entity_type::withPayload($payload);
 	}
